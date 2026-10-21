@@ -1,0 +1,47 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>CLINICA MULTI LAB — Patient Entry</title>
+<style>
+:root{font-family:Arial,Helvetica,sans-serif;color:#17212b;background:#f4f7fa}*{box-sizing:border-box}body{margin:0;padding:16px}.wrap{max-width:680px;margin:auto}.brand{background:#0c6658;color:#fff;padding:22px;border-radius:16px 16px 0 0;text-align:center}.brand h1{font-size:22px;margin:0 0 6px}.brand p{margin:0;font-size:13px;letter-spacing:.5px}.panel{background:white;padding:18px;border:1px solid #dce4e8;border-radius:0 0 16px 16px;box-shadow:0 6px 22px #10203010}.field{margin:0 0 14px}.field label{display:block;font-size:13px;font-weight:700;margin-bottom:6px}.field input,.field textarea{width:100%;padding:12px;border:1px solid #cbd5dc;border-radius:9px;font:16px Arial}.field textarea{min-height:72px;resize:vertical}.buttons{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-top:18px}.btn{border:0;border-radius:10px;padding:13px 10px;font-weight:700;font-size:14px;background:#0c6658;color:#fff;cursor:pointer}.btn.secondary{background:#e8f2ef;color:#075346}.btn.dark{background:#1767a8}.hint{font-size:12px;color:#586774;line-height:1.5;margin-top:14px}.slip{margin-top:18px;background:white;border:2px solid #0c6658;border-radius:12px;padding:20px;display:none}.slip h2{text-align:center;color:#0c6658;font-size:20px;margin:0 0 5px}.slip .sub{text-align:center;font-size:12px;margin:0 0 18px}.sliprow{border-bottom:1px solid #d9e2e5;padding:10px 0;display:grid;grid-template-columns:42% 58%;gap:8px;font-size:14px;overflow-wrap:anywhere}.sliprow b{color:#344650}.foot{text-align:center;font-size:11px;color:#64727a;margin-top:18px}@media print{body{background:white;padding:0}.wrap>.brand,.panel,.hint,.noprint{display:none!important}.slip{display:block!important;margin:0;border:2px solid #0c6658;box-shadow:none;break-inside:avoid}.wrap{max-width:none}.sliprow{font-size:14px}}
+</style></head>
+<body><main class="wrap">
+<header class="brand"><h1>CLINICA MULTI LAB</h1><p>BLOOD COLLECTION CENTRE · PATIENT ENTRY</p></header>
+<section class="panel noprint">
+<div class="field"><label for="client">CLIENT CODE / NAME *</label><input id="client" placeholder="Enter client code or name" required></div>
+<div class="field"><label for="patient">PATIENT NAME *</label><input id="patient" placeholder="Enter patient full name" required></div>
+<div class="field"><label for="age">AGE / SEX *</label><input id="age" placeholder="e.g. 45 / Male" required></div>
+<div class="field"><label for="test">TEST *</label><textarea id="test" placeholder="Enter test name(s)" required></textarea></div>
+<div class="field"><label for="doctor">DR. NAME</label><input id="doctor" placeholder="Enter referring doctor's name"></div>
+<div class="field"><label for="lab">REFERRAL LAB NAME *</label><input id="lab" placeholder="Enter referral laboratory" required></div>
+<div class="field"><label for="barcode">BARCODE NO</label><input id="barcode" placeholder="Enter barcode number"></div>
+<div class="buttons">
+<button class="btn" onclick="makeSlip()">Create Patient Slip</button>
+<button class="btn secondary" onclick="downloadImage()">Download Image (PNG)</button>
+<button class="btn dark" onclick="window.print()">Save as PDF / Print</button>
+<button class="btn secondary" onclick="shareWhatsApp()">Send Details on WhatsApp</button>
+<button class="btn" style="grid-column:1/-1" onclick="shareImage()">Share Patient Slip Image</button>
+</div>
+<p class="hint">Fill in the details and tap “Create Patient Slip”. Save as PDF opens your phone's print dialog; choose “Save as PDF”. Image sharing depends on browser/device support. WhatsApp opens a pre-filled message; review it and tap Send.</p>
+</section>
+<section class="slip" id="slip"><h2>CLINICA MULTI LAB</h2><p class="sub">BLOOD COLLECTION CENTRE · PATIENT ENTRY SLIP</p>
+<div class="sliprow"><b>CLIENT CODE / NAME</b><span id="o-client"></span></div>
+<div class="sliprow"><b>PATIENT NAME</b><span id="o-patient"></span></div>
+<div class="sliprow"><b>AGE / SEX</b><span id="o-age"></span></div>
+<div class="sliprow"><b>TEST</b><span id="o-test"></span></div>
+<div class="sliprow"><b>DR. NAME</b><span id="o-doctor"></span></div>
+<div class="sliprow"><b>REFERRAL LAB NAME</b><span id="o-lab"></span></div>
+<div class="sliprow"><b>BARCODE NO</b><span id="o-barcode"></span></div>
+<p class="foot">Please verify all patient details before sample collection.</p></section>
+</main>
+<script>
+const ids=['client','patient','age','test','doctor','lab','barcode'];
+function val(id){return document.getElementById(id).value.trim()}
+function makeSlip(){for(const id of ['client','patient','age','test','lab']){if(!val(id)){document.getElementById(id).focus();alert('Please complete: '+document.querySelector('label[for="'+id+'"]').innerText);return false}}const out=['client','patient','age','test','doctor','lab','barcode'];out.forEach(id=>document.getElementById('o-'+id).textContent=val(id)||'—');document.getElementById('slip').style.display='block';document.getElementById('slip').scrollIntoView({behavior:'smooth',block:'start'});return true}
+function message(){return 'CLINICA MULTI LAB BLOOD COLLECTION CENTRE\nPATIENT ENTRY\n\nCLIENT CODE / NAME: '+(val('client')||'')+'\nPATIENT NAME: '+(val('patient')||'')+'\nAGE / SEX: '+(val('age')||'')+'\nTEST: '+(val('test')||'')+'\nDR. NAME: '+(val('doctor')||'')+'\nREFERRAL LAB NAME: '+(val('lab')||'')+'\nBARCODE NO: '+(val('barcode')||'')}
+function shareWhatsApp(){if(!makeSlip())return;location.href='https://wa.me/918348409623?text='+encodeURIComponent(message())}
+function drawCanvas(){if(!makeSlip())return null;const dpr=2,w=900,pad=54;const rows=[['CLIENT CODE / NAME',val('client')],['PATIENT NAME',val('patient')],['AGE / SEX',val('age')],['TEST',val('test')],['DR. NAME',val('doctor')||'—'],['REFERRAL LAB NAME',val('lab')],['BARCODE NO',val('barcode')||'—']];const c=document.createElement('canvas');const ctx=c.getContext('2d');ctx.font='bold 30px Arial';let height=170;for(const [k,v] of rows){ctx.font='24px Arial';const words=(v||'—').split(/\s+/);let lines=1,line='';for(const word of words){let t=line?line+' '+word:word;if(ctx.measureText(t).width>w-330){lines++;line=word}else line=t}height+=Math.max(74,lines*34+34)}height+=65;c.width=w*dpr;c.height=height*dpr;ctx.scale(dpr,dpr);ctx.fillStyle='#ffffff';ctx.fillRect(0,0,w,height);ctx.strokeStyle='#0c6658';ctx.lineWidth=4;ctx.strokeRect(10,10,w-20,height-20);ctx.textAlign='center';ctx.fillStyle='#0c6658';ctx.font='bold 34px Arial';ctx.fillText('CLINICA MULTI LAB',w/2,62);ctx.fillStyle='#344650';ctx.font='20px Arial';ctx.fillText('BLOOD COLLECTION CENTRE · PATIENT ENTRY SLIP',w/2,98);let y=145;ctx.textAlign='left';for(const [k,v] of rows){ctx.strokeStyle='#d9e2e5';ctx.lineWidth=1;ctx.beginPath();ctx.moveTo(pad,y);ctx.lineTo(w-pad,y);ctx.stroke();ctx.fillStyle='#344650';ctx.font='bold 20px Arial';ctx.fillText(k,pad,y+34);ctx.fillStyle='#17212b';ctx.font='22px Arial';let words=(v||'—').split(/\s+/),line='',lines=[];for(const word of words){let t=line?line+' '+word:word;if(ctx.measureText(t).width>w-360){lines.push(line);line=word}else line=t}if(line)lines.push(line);lines.forEach((s,i)=>ctx.fillText(s,350,y+34+i*30));y+=Math.max(74,lines.length*30+34)}ctx.textAlign='center';ctx.fillStyle='#64727a';ctx.font='16px Arial';ctx.fillText('Please verify all patient details before sample collection.',w/2,height-27);return c}
+function downloadImage(){const c=drawCanvas();if(!c)return;const a=document.createElement('a');a.download='Clinica-Patient-Slip.png';a.href=c.toDataURL('image/png');a.click()}
+async function shareImage(){const c=drawCanvas();if(!c)return;c.toBlob(async blob=>{const file=new File([blob],'Clinica-Patient-Slip.png',{type:'image/png'});if(navigator.canShare&&navigator.canShare({files:[file]})){try{await navigator.share({files:[file],title:'Clinica Patient Slip',text:'CLINICA MULTI LAB BLOOD COLLECTION CENTRE'})}catch(e){}}else{downloadImage();alert('Image downloaded. Open WhatsApp and attach the saved PNG image to your chat.')}},'image/png')}
+</script></body></html>
